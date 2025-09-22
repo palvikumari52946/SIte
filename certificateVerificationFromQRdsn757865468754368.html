@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dotted Captcha with PDF</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Layout wrapper */
+    .layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    /* Captcha box */
+    .container {
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .captcha-box {
+      background: #f7f7f7;
+      padding: 20px;
+      text-align: center;
+      border: 1px solid #ddd;
+    }
+
+    /* Dotted captcha effect */
+    .captcha {
+      font-size: 34px;
+      font-weight: bold;
+      letter-spacing: 6px;
+      color: transparent;
+      background-image: radial-gradient(black 1.5px, transparent 1.5px);
+      background-size: 5px 5px;
+      -webkit-background-clip: text;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+
+    .refresh {
+      font-size: 18px;
+      cursor: pointer;
+      color: #3498db;
+      margin-bottom: 10px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background: #3498db;
+      border: none;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    .btn:hover {
+      background: #2f80c7;
+    }
+
+    .separator {
+      border-top: 1px solid #ddd;
+      margin: 10px 0;
+    }
+
+    /* PDF wrapper styled as A4 */
+    .pdf-wrapper {
+      display: none; /* hidden by default */
+      width: 100%;
+      max-width: 800px;
+      aspect-ratio: 210 / 297; /* A4 ratio */
+      border: 1px solid #ccc;
+    }
+
+    .pdf-wrapper embed {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* On large screens: captcha left, PDF right */
+    @media (min-width: 900px) {
+      .layout {
+        flex-direction: row;
+        align-items: flex-start;
+      }
+      .container {
+        flex: 0 0 350px;
+      }
+      .pdf-wrapper {
+        flex: 1;
+        max-width: none;
+        height: 95vh; /* big view */
+        aspect-ratio: auto; /* allow fullscreen height */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="layout">
+    <!-- Captcha system -->
+    <div class="container" id="captcha-container">
+      <div class="separator"></div>
+      <div class="captcha-box">
+        <div class="captcha" id="captcha-text"></div>
+        <div class="refresh" onclick="generateCaptcha()">&#8635;</div>
+        <input type="text" id="captcha-input" placeholder="">
+      </div>
+      <div class="separator"></div>
+      <button class="btn" onclick="checkCaptcha()">Search</button>
+    </div>
+
+    <!-- PDF viewer (hidden until captcha success) -->
+    <div class="pdf-wrapper" id="pdf-wrapper">
+      <embed src="https://palvikumari52946.github.io/Docss/death%20new.pdf"
+             type="application/pdf">
+    </div>
+  </div>
+
+  <script>
+    let captchaCode = "";
+
+    function generateCaptcha() {
+      const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      captchaCode = "";
+      for (let i = 0; i < 6; i++) {
+        captchaCode += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      document.getElementById("captcha-text").innerText = captchaCode;
+    }
+
+    function checkCaptcha() {
+      const input = document.getElementById("captcha-input").value.trim();
+      if (input === captchaCode) {
+        document.getElementById("pdf-wrapper").style.display = "block"; // show PDF
+      } else {
+        alert("Invalid Captcha. Try again.");
+        generateCaptcha();
+      }
+    }
+
+    window.onload = generateCaptcha;
+  </script>
+
+</body>
+</html>
